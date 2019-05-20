@@ -12,11 +12,34 @@
     echo '</script>';
   } 
   
-	$follow 	= $_GET["seguir"];
-	$unfollow 	= $_GET["desseguir"];
-	$follow_user = $_GET["seguirNome"];
+	$follow 	= $_GET["follow"];
+	$unfollow 	= $_GET["unfollow"];
+	$follow_user = $_GET["follow_user"];
 	$like = $_GET["artefact"];
-	$id_user 	= $_SESSION["id_user"];
+  $id_user 	= $_SESSION["id_user"];
+  
+  if($_POST["user_post"]){
+    
+    // Conecta ao BD
+    $conexao = new mysqli("127.0.0.1", "root", NULL, "rede_social");
+
+    // Deu erro ao conectar?
+    if ($conexao->connect_error) {
+      echo "Erro de Conexão!<br>".$conexao->connect_error;
+    }
+      // Obtem dados do POST
+    $post_image = addslashes(  $_POST["post_image"] );
+    $post_text = addslashes(  md5($_POST["post_text"]) );
+
+    // Valida campos obrigatórios
+    if ($post_image != "" && $post_text != "" ) {
+
+      // Cria o comando SQL
+        $sql = "INSERT INTO posts (id_user, post_image, post_text) VALUES ('$id_user', '$post_image', '$post_text')";
+        // Executa no BD
+        $retorno = $conexao->query($sql);
+
+  }
   
 ?>
 <!DOCTYPE html>
