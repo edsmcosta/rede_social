@@ -40,7 +40,7 @@ function console_log( $data ){
         if (!$registro[0]) {
             
                 // Cria o comando SQL
-                $sql = "INSERT INTO users ( name, login, password, phone) VALUES ( '$name', '$login', '$password', '$phone')";
+                $sql = "INSERT INTO users ( name, login, password, picture, phone ) VALUES ( '$name', '$login', '$password', '$phone')";
 
                 // Executa no BD
                 $retorno = $conexao->query( $sql );

@@ -1,17 +1,22 @@
 <?php 
-
-function console_log( $data ){
-  echo '<script>';
-  echo 'console.log('. json_encode( $data ) .')';
-  echo '</script>';
-}
-
 	error_reporting(1);
-  session_start("rede_social");
+  session_start();
   
 	if ($_SESSION["logado"] != 'ok') {
-		console_log($_SESSION);
+		header("Location: index.php");
   }
+
+  function console_log( $data ){
+    echo '<script>';
+    echo 'console.log('. json_encode( $data ) .')';
+    echo '</script>';
+  } 
+  
+	$follow 	= $_GET["seguir"];
+	$unfollow 	= $_GET["desseguir"];
+	$follow_user = $_GET["seguirNome"];
+	$like = $_GET["artefact"];
+	$id_user 	= $_SESSION["id_user"];
   
 ?>
 <!DOCTYPE html>

@@ -1,15 +1,14 @@
 <?php
+  // Remove mensagem de alerta
+  error_reporting(1);
 
-function console_log( $data ){
+  session_start();
+
+  function console_log( $data ){
     echo '<script>';
     echo 'console.log('. json_encode( $data ) .')';
     echo '</script>';
   }
-
-  // Remove mensagem de alerta
-  error_reporting(1);
-
-  session_start("rede_social");
 
   // Clicou em enviar? O POST Existe?
   if ($_POST != NULL) {
@@ -26,8 +25,6 @@ function console_log( $data ){
     $login = addslashes(  $_POST["login"] );
     $password = addslashes(  md5($_POST["password"]) );
 
-    //addslashes() <- evita SQL Injection quado for fazer um SELECT
-
     // Valida campos obrigatórios
     if ($login != "" && $password != "" ) {
 
@@ -38,12 +35,17 @@ function console_log( $data ){
 
         // Executou?
         if ($retorno = $retorno->fetch_array()) {
-          
+
+          $user_name 		= $retorno["name"];
+          $id_user 		= $retorno["id_user"];
+          $user_picture 		= $retorno["picture"];
+          $user_phone 	= $retorno["phone"];
+
           $_SESSION["logado"] 			= "ok";
-          $_SESSION["nome_usuario"] 		= $registro["name"];
-          $_SESSION["id_usuario"] 		= $registro["id_user"];
-          $_SESSION["curso_usuario"] 		= $registro["picture"];
-          $_SESSION["semestre_usuario"] 	= $registro["phone"];
+          $_SESSION["user_name"] 		= $user_name;
+          $_SESSION["id_user"] 		= $id_user;
+          $_SESSION["user_picture"] 		= $user_picture;
+          $_SESSION["user_phone"] 	= $user_phone;
 
           echo "<script>
                     location.href='home.php';
