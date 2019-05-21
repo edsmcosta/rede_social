@@ -59,7 +59,7 @@
 				FROM invite 
 				WHERE (id_sender='$id_user' AND id_receiver='$id_following') 
         OR (id_sender='$id_following' AND id_receiver='$id_user')
-        AND NOT FIND_IN_SET(id_status, "1,2");";
+        AND NOT FIND_IN_SET(id_status, '1,2');";
         
 		$retorno_follow = $con -> query($sql);
     $registro = $retorno_follow -> fetch_array();
@@ -94,7 +94,7 @@
 				FROM invite 
 				WHERE (id_sender='$id_sender' AND id_receiver='$id_receiver') 
         OR (id_sender='$id_receiver' AND id_receiver='$id_sender')
-        AND NOT FIND_IN_SET(id_status, "1");";
+        AND NOT FIND_IN_SET(id_status, '1');";
         
 		$retorno_follow = $con -> query($sql);
     $registro = $retorno_follow -> fetch_array();
@@ -138,33 +138,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
 
-<!-- Navbar -->
-<div class="w3-top">
- <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
-  <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Logo</a>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a>
-  <div class="w3-dropdown-hover w3-hide-small">
-    <button class="w3-button w3-padding-large" title="Notifications"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">3</span></button>     
-    <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-      <a href="#" class="w3-bar-item w3-button">One new friend request</a>
-      <a href="#" class="w3-bar-item w3-button">John Doe posted on your wall</a>
-      <a href="#" class="w3-bar-item w3-button">Jane likes your post</a>
-    </div>
-  </div>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="My Account">
-    <img src="/w3images/avatar2.png" class="w3-circle" style="height:23px;width:23px" alt="Avatar">
-  </a>
- </div>
-</div>
-
-<!-- Navbar on small screens -->
-<div id="navDemo" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">My Profile</a>
-</div>
+<?php include_once "topo.php";?>
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">    
@@ -175,12 +149,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <!-- Profile -->
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center">My Profile</h4>
-         <p class="w3-center"><img src="/w3images/avatar3.png" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+         <h4 class="w3-center"><?php echo $_SESSION["user_name"];?></h4>
+         <p class="w3-center"><img src='<?php echo $_SESSION["user_picture"] ;?>' class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
          <hr>
-         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> Designer, UI</p>
-         <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> London, UK</p>
-         <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> April 1, 1988</p>
+         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> <?php echo $_SESSION["user_phone"];?></p>
         </div>
       </div>
       <br>
@@ -293,9 +265,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       
       <div class="w3-card w3-round w3-white w3-center">
         <div class="w3-container">
+          
           <p>Friend Request</p>
-          <img src="/w3images/avatar6.png" alt="Avatar" style="width:50%"><br>
-          <span>Jane Doe</span>
+          <img src='<?php echo $_SESSION["user_picture"];?>' alt="Avatar" style="width:50%"><br>
+          <span><?php echo $_SESSION["user_name"];?></span>
           <div class="w3-row w3-opacity">
             <div class="w3-half">
               <button class="w3-button w3-block w3-green w3-section" title="Accept"><i class="fa fa-check"></i></button>
@@ -309,20 +282,21 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <br>
       
       <br>
+
       <?php
 
                 // Remove mensagem de alerta
                 error_reporting(1);
 
                 // Conecta ao BD
-                $conexao = new mysqli("localhost", "root", "", "agenda");
+                $conexao = new mysqli("127.0.0.1", "root", NULL, "rede_social");
 
                 // Deu erro ao conectar?
                 if ($conexao->connect_error) {
                 echo "Erro de Conexão!<br>".$conexao->connect_error;
                 }
 
-                $sql = "SELECT * FROM invites inner join users on invites.id_sender = users.id_user WHERE id_receiver = $id_user";
+                $sql = "SELECT * FROM invites WHERE id_receiver = $id_user";
 
                 $retorno = $conexao->query($sql);
 
@@ -336,13 +310,35 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
                   if($registro["id_status"] = 2){
 
-                    $nome = $registro["nome"];
-                    $telefone = $registro["telefone"];
+                    $nome = $registro["user_name"];
+                    $telefone = $registro["user_phone"];
+                    $phone = $registro["user_picture"];
 
-                    echo "<tr>
-                            <td>Ed Costa</td>
-                            <td>xxxxxx-xxxx</td>
-                        <tr>";
+                    echo 
+                    "<div class='w3-col m2'>
+      
+                     <br>
+      
+                     <div class='w3-card w3-round w3-white w3-center'>
+                    
+                    <div class='w3-container'>
+          
+                    <p>Friend Request</p>
+                    <img src='' alt='Avatar' style='width:50%'><br>
+                    <span>$nome</span>
+                    <div class='w3-row w3-opacity'>
+                      <div class='w3-half'>
+                        <button class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></button>
+                      </div>
+                      <div class='w3-half'>
+                        <button class='w3-button w3-block w3-red w3-section' title='Decline'><i class='fa fa-remove'></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <br>
+      
+                  <br>";
                   }
                 }
             ?>
