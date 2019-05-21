@@ -10,76 +10,75 @@ function console_log( $data ){
   //error_reporting(1);
 
   // Clicou em enviar? O POST Existe?
-  if ($_POST != NULL) {
+    if ($_POST != NULL) {
 
-    // Conecta ao BD
-    $conexao = new mysqli("127.0.0.1", "root", NULL, "rede_social");
+        // Conecta ao BD
+        include_once "bd_connect.php";
 
-    // Deu erro ao conectar?
-    if ($conexao->connect_error) {
-      echo "Erro de Conexão!<br>".$conexao->connect_error;
-    }
-
-    // Obtem dados do POST
-    $name = addslashes( $_POST["nome"] );
-    $phone = addslashes( $_POST["telefone"] );
-    $email = addslashes( $_POST["email"] );
-    $login = addslashes( $_POST["login"] );
-    $password = addslashes( md5($_POST["password1"]) );
-    $picture = addslashes( $_POST["foto"] );
-
-    // Valida campos obrigatórios
-    if ($name != "" && $login != "" && $password != "" ) {
-        $sql = "SELECT * 
-                        FROM users
-                        WHERE login = '$login' ";
-                
-        $retorno = $conexao->query( $sql );
-        $registro = $retorno -> fetch_array();
-
-        if (!$registro[0]) {
-            
-                // Cria o comando SQL
-                $sql = "INSERT INTO users ( name, login, password, picture, phone ) VALUES ( '$name', '$login', '$password', '$picture' , '$phone')";
-
-                // Executa no BD
-                $retorno = $conexao->query( $sql );
-
-                // Executou?
-                if ($retorno == true) {
-
-                    echo "<script>
-                            alert('Cadastrado com Sucesso!');
-                            location.href='index.php';
-                        </script>"
-                    ;
-                    console_log( $retorno );
-
-                } else {
-
-                    echo "<script>
-                            alert('Erro ao Cadastrar!');
-                        </script>"
-                    ;
-                    // Exibe do erro que o banco retorna
-                    console_log( $retorno );
-                    console_log( $conexao->error );
-
-                }
-        else{
-            echo "<script>
-                    alert('Já existe um usuário com esses dados!');
-                    location.href = 'cadastro.php'
-                </script>";
+        // Obtem dados do POST
+        $name = addslashes( $_POST["nome"] );
+        $phone = addslashes( $_POST["telefone"] );
+        $email = addslashes( $_POST["email"] );
+        $login = addslashes( $_POST["login"] );
+        $password = addslashes( md5($_POST["password1"]) );
+        if( strlen($_POST["foto"]) != 0) { 
+            $picture = addslashes( $_POST["foto"] );
+        } else {
+            $picture = "https://images.vexels.com/media/users/3/147102/isolated/preview/082213cb0f9eabb7e6715f59ef7d322a---cone-do-perfil-do-instagram-by-vexels.png";
         }
-    } else {
-        echo "<script>
-                alert('Preencha todos os campos!');
-              </script>"
-        ;
-    }
 
-  }
+        // Valida campos obrigatórios
+        if ($name != "" && $login != "" && $password != "" ) {
+            $sql = "SELECT * 
+                            FROM users
+                            WHERE login = '$login' ";
+                    
+            $retorno = $conexao->query( $sql );
+            $registro = $retorno -> fetch_array();
+
+            if (!$registro[0]) {
+                
+                    // Cria o comando SQL
+                    $sql = "INSERT INTO users ( name, login, password, picture, phone ) VALUES ( '$name', '$login', '$password', '$picture' , '$phone')";
+
+                    // Executa no BD
+                    $retorno = $conexao->query( $sql );
+
+                    // Executou?
+                    if ($retorno == true) {
+
+                        echo "<script>
+                                alert('Cadastrado com Sucesso!');
+                                location.href='index.php';
+                            </script>"
+                        ;
+                        console_log( $retorno );
+
+                    } else {
+
+                        echo "<script>
+                                alert('Erro ao Cadastrar!');
+                            </script>"
+                        ;
+                        // Exibe do erro que o banco retorna
+                        console_log( $retorno );
+                        console_log( $conexao->error );
+
+                    }
+            }else{
+                echo "<script>
+                        alert('Já existe um usuário com esses dados!');
+                        location.href = 'cadastro.php'
+                    </script>";
+            }
+        } else {
+            echo "<script>
+                    alert('Preencha todos os campos!');
+                </script>"
+            ;
+        }
+
+    }
 
 ?>
 <!doctype html>
