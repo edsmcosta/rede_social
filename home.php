@@ -17,29 +17,110 @@
 	$follow_user = $_GET["follow_user"];
 	$like = $_GET["artefact"];
   $id_user 	= $_SESSION["id_user"];
+
+  // Conecta ao BD
+  include_once "bd_connect.php";
   
   if($_POST["user_post"]){
-    
-    // Conecta ao BD
-    $conexao = new mysqli("127.0.0.1", "root", NULL, "rede_social");
 
-    // Deu erro ao conectar?
-    if ($conexao->connect_error) {
-      echo "Erro de Conexão!<br>".$conexao->connect_error;
-    }
       // Obtem dados do POST
-    $post_image = addslashes(  $_POST["post_image"] );
-    $post_text = addslashes(  md5($_POST["post_text"]) );
+      $post_image = addslashes(  $_POST["post_image"] );
+      $post_text = addslashes(  md5($_POST["post_text"]) );
 
-    // Valida campos obrigatórios
-    if ($post_image != "" && $post_text != "" ) {
+      // Valida campos obrigatórios
+      if ($post_image != "" && $post_text != "" ) {
 
-      // Cria o comando SQL
+        // Cria o comando SQL
         $sql = "INSERT INTO posts (id_user, post_image, post_text) VALUES ('$id_user', '$post_image', '$post_text')";
         // Executa no BD
         $retorno = $conexao->query($sql);
 
+        if (!$retorno) {
+          echo "<script>";
+          echo "alert('Erro na inserção!');";
+          echo "</script>";
+        }
+        else{
+          echo "<script>";
+          echo "alert('Postagem concluida!');";
+          echo "</script>";
+        }
+      }
+      else{
+        echo "<script>alert('Por favor, informe todos os campos!')</script>";
+      }	
   }
+
+
+  // Follow user
+	if ($follow) {
+    
+		$sql = "SELECT * 
+				FROM invite 
+				WHERE (id_sender='$id_user' AND id_receiver='$id_following') 
+        OR (id_sender='$id_following' AND id_receiver='$id_user')
+        AND NOT FIND_IN_SET(id_status, "1,2");";
+        
+		$retorno_follow = $con -> query($sql);
+    $registro = $retorno_follow -> fetch_array();
+    
+		if (!$registro[0]) {
+
+			$sql = "INSERT INTO invite (id_sender, id_receiver)
+          VALUES ('$id_sender', '$id_receiver')";
+          
+      $retorno_invite = $con -> query( $sql );
+      
+			if (!$retorno_invite) {
+				echo "<script>";
+				echo "alert('Erro na inserção!');";
+				echo "</script>";
+			}
+			else{
+        echo "<script>";
+				echo "alert('Convite enviado!');";
+				echo "</script>";
+			}
+		}
+		else{
+			echo "<script>alert('Você já segue esta pessoa')</script>";
+		}	
+  }
+  
+    // Unfollow user
+	if ($unfollow) {
+    
+		$sql = "SELECT * 
+				FROM invite 
+				WHERE (id_sender='$id_sender' AND id_receiver='$id_receiver') 
+        OR (id_sender='$id_receiver' AND id_receiver='$id_sender')
+        AND NOT FIND_IN_SET(id_status, "1");";
+        
+		$retorno_follow = $con -> query($sql);
+    $registro = $retorno_follow -> fetch_array();
+    
+		if ($registro[0]) {
+
+			$sql = "INSERT INTO invite (id_sender, id_receiver)
+          VALUES ('$id_sender', '$id_receiver')";
+          
+      $retorno_invite = $con -> query( $sql );
+      
+			if (!$retorno_invite) {
+				echo "<script>";
+				echo "alert('Erro na inserção!');";
+				echo "</script>";
+			}
+			else{
+        echo "<script>";
+				echo "alert('Acabou a amizade!');";
+				echo "</script>";
+			}
+		}
+		else{
+			echo "<script>alert('Você não segue esta pessoa')</script>";
+		}	
+	}
   
 ?>
 <!DOCTYPE html>
@@ -228,6 +309,43 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <br>
       
       <br>
+      <?php
+
+                // Remove mensagem de alerta
+                error_reporting(1);
+
+                // Conecta ao BD
+                $conexao = new mysqli("localhost", "root", "", "agenda");
+
+                // Deu erro ao conectar?
+                if ($conexao->connect_error) {
+                echo "Erro de Conexão!<br>".$conexao->connect_error;
+                }
+
+                $sql = "SELECT * FROM invites inner join users on invites.id_sender = users.id_user WHERE id_receiver = $id_user";
+
+                $retorno = $conexao->query($sql);
+
+                if($retorno == false){
+                    echo $conexao->error;
+                }else{
+                  $_SESSION["invites_received"] = $retorno;
+                }
+
+                while($registro = $_SESSION["invites_received"]->fetch_array()){
+
+                  if($registro["id_status"] = 2){
+
+                    $nome = $registro["nome"];
+                    $telefone = $registro["telefone"];
+
+                    echo "<tr>
+                            <td>Ed Costa</td>
+                            <td>xxxxxx-xxxx</td>
+                        <tr>";
+                  }
+                }
+            ?>
       
       
     <!-- End Right Column -->
