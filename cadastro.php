@@ -129,10 +129,6 @@ function console_log( $data ){
             <input type="text" name="telefone" maxlength="50" class="form-control">
         </div>
 
-        <div class="form-group">
-            <label>E-Mail</label>
-            <input type="email" name="email" maxlength="100" class="form-control">
-        </div>
 
         <div class="form-group">
             <label>Foto</label>
