@@ -1,13 +1,35 @@
-img {
+.img {
     display: block;
     margin: auto;
     margin-top: 20px;
-    width: 400px;
+    width: 300px;
+    
 }
 
 form {
     text-align: center;
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-fields{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+.login-submit{
+    display: flex;
+    justify-content: space-between;
+}
+.entrar{
+    width: 120px;
+    margin-right: 10px;
+}
+
+body{
+    background-color: #ffcc33; 
 }
 
 input {
