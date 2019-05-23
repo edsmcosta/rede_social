@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 21-Maio-2019 às 01:04
+-- Generation Time: 24-Maio-2019 às 01:03
 -- Versão do servidor: 10.1.38-MariaDB
 -- versão do PHP: 7.3.2
 
@@ -39,6 +39,19 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `friendship`
+--
+
+CREATE TABLE `friendship` (
+  `id_friendship` int(11) NOT NULL,
+  `id_user1` int(11) NOT NULL,
+  `id_user2` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `invites`
 --
 
@@ -48,6 +61,14 @@ CREATE TABLE `invites` (
   `id_receiver` int(11) NOT NULL,
   `id_status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `invites`
+--
+
+INSERT INTO `invites` (`id_invite`, `id_sender`, `id_receiver`, `id_status`) VALUES
+(1, 1, 6, 2),
+(2, 2, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -59,6 +80,15 @@ CREATE TABLE `invite_status` (
   `id_status` int(11) NOT NULL,
   `description` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `invite_status`
+--
+
+INSERT INTO `invite_status` (`id_status`, `description`) VALUES
+(1, 'amigo'),
+(3, 'cancelado'),
+(2, 'pendente');
 
 -- --------------------------------------------------------
 
@@ -123,6 +153,12 @@ ALTER TABLE `comments`
   ADD KEY `id_post` (`id_post`);
 
 --
+-- Indexes for table `friendship`
+--
+ALTER TABLE `friendship`
+  ADD PRIMARY KEY (`id_friendship`);
+
+--
 -- Indexes for table `invites`
 --
 ALTER TABLE `invites`
@@ -159,16 +195,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `friendship`
+--
+ALTER TABLE `friendship`
+  MODIFY `id_friendship` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `invites`
 --
 ALTER TABLE `invites`
-  MODIFY `id_invite` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_invite` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `invite_status`
 --
 ALTER TABLE `invite_status`
-  MODIFY `id_status` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_status` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `posts`
