@@ -5,6 +5,8 @@ input{
     height: 25px;
     padding-left: 10px;
     border-radius: 3px;
+    background-color: #ffcc33 !important;
+    border-color: #ffcc33;
 }
 
 h1{
@@ -17,6 +19,10 @@ h1{
     width: 300px;
     height: 60px;
     align-items: center !important;
+}
+
+body{
+    background-color: #ffcc33 !important; 
 }
 
 fieldset { 

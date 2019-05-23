@@ -136,7 +136,7 @@ function console_log( $data ){
         </div>
 
         <button type="submit" class = "w3-btn w3-blue w3-border w3-border-blue w3-round-xlarge">Cadastrar</button>
-        <a class ="w3-btn w3-red w3-border w3-border-red w3-round-xlarge" href="teste.php">Voltar</a>    
+        <a class ="w3-btn w3-red w3-border w3-border-red w3-round-xlarge" href="index.php">Voltar</a>    
     </form>  
 </fieldset>
 
