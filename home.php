@@ -12,6 +12,52 @@
     echo '</script>';
   } 
   
+  function accept_invite( $id_invite ){
+    // Conecta ao BD
+    include_once "bd_connect.php";
+
+    // Cria o comando SQL
+    $sql = "UPDATE invites SET id_status = 1 WHERE id_invite = $id_invite";
+
+    // Executa no BD
+    $retorno = $conexao->query($sql);
+
+    if (!$retorno) {
+      echo "<script>";
+      echo "alert('Erro na inserção!');";
+      echo "</script>";
+    }
+    else{
+      echo "<script>";
+      echo "alert('Relacionamento atualizado!');";
+      echo "</script>";
+    }
+    
+  }
+
+  function reject_invite( $id_invite ){
+    // Conecta ao BD
+    include_once "bd_connect.php";
+
+    // Cria o comando SQL
+    $sql = "UPDATE invites SET id_status = 3 WHERE id_invite = $id_invite";
+
+    // Executa no BD
+    $retorno = $conexao->query($sql);
+
+    if (!$retorno) {
+      echo "<script>";
+      echo "alert('Erro na inserção!');";
+      echo "</script>";
+    }
+    else{
+      echo "<script>";
+      echo "alert('Relacionamento atualizado!');";
+      echo "</script>";
+    }
+    
+  }
+  
 	$follow 	= $_GET["follow"];
 	$unfollow 	= $_GET["unfollow"];
 	$follow_user = $_GET["follow_user"];
@@ -283,7 +329,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         // Conecta ao BD
         include_once "bd_connect.php";
 
-        $sql = "SELECT inv.id_invite, us.id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
+        $sql = "SELECT inv.id_invite as id_invite, us.id_user as id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
 
         $retorno = $conexao -> query($sql);
 
@@ -297,6 +343,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
           if($registro["id_status"] = 2){
 
+            $id_invite = $registro["id_invite"];
             $nome = $registro["user_name"];
             $phone = $registro["user_phone"];
             $picture = $registro["user_picture"];
