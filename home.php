@@ -261,7 +261,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <!-- Right Column -->
     <div class="w3-col m2">
       
-      <br>
+      <!-- <br>
       
       <div class="w3-card w3-round w3-white w3-center">
         <div class="w3-container">
@@ -278,70 +278,54 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             </div>
           </div>
         </div>
-      </div>
-      <br>
-      
-      <br>
-
+      </div> -->
       <?php
+        // Conecta ao BD
+        include_once "bd_connect.php";
 
-                // Remove mensagem de alerta
-                error_reporting(1);
+        $sql = "SELECT inv.id_invite, us.id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
 
-                // Conecta ao BD
-                $conexao = new mysqli("127.0.0.1", "root", NULL, "rede_social");
+        $retorno = $conexao -> query($sql);
 
-                // Deu erro ao conectar?
-                if ($conexao->connect_error) {
-                echo "Erro de Conexão!<br>".$conexao->connect_error;
-                }
+        if($retorno == false){
+            echo $conexao->error;
+        }else{
+          $_SESSION["invites_received"] = $retorno;
+        }
 
-                $sql = "SELECT * FROM invites WHERE id_receiver = $id_user";
+        while($registro = $_SESSION["invites_received"] -> fetch_array()){
 
-                $retorno = $conexao->query($sql);
+          if($registro["id_status"] = 2){
 
-                if($retorno == false){
-                    echo $conexao->error;
-                }else{
-                  $_SESSION["invites_received"] = $retorno;
-                }
+            $nome = $registro["user_name"];
+            $phone = $registro["user_phone"];
+            $picture = $registro["user_picture"];
 
-                while($registro = $_SESSION["invites_received"]->fetch_array()){
+            echo  "      
+            <br>
 
-                  if($registro["id_status"] = 2){
-
-                    $nome = $registro["user_name"];
-                    $telefone = $registro["user_phone"];
-                    $phone = $registro["user_picture"];
-
-                    echo 
-                    "<div class='w3-col m2'>
+            <div class='w3-card w3-round w3-white w3-center'>
+                
+              <div class='w3-container'>
       
-                     <br>
-      
-                     <div class='w3-card w3-round w3-white w3-center'>
-                    
-                    <div class='w3-container'>
-          
-                    <p>Friend Request</p>
-                    <img src='' alt='Avatar' style='width:50%'><br>
-                    <span>$nome</span>
-                    <div class='w3-row w3-opacity'>
-                      <div class='w3-half'>
-                        <button class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></button>
-                      </div>
-                      <div class='w3-half'>
-                        <button class='w3-button w3-block w3-red w3-section' title='Decline'><i class='fa fa-remove'></i></button>
-                      </div>
-                    </div>
+                <p>Friend Request</p>
+                <img src='$picture' alt='Avatar' style='width:50%'><br>
+                <span>$nome</span>
+                <div class='w3-row w3-opacity'>
+                  <div class='w3-half'>
+                    <button class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></button>
                   </div>
+                  <div class='w3-half'>
+                    <button class='w3-button w3-block w3-red w3-section' title='Decline'><i class='fa fa-remove'></i></button>
                   </div>
-                  <br>
-      
-                  <br>";
-                  }
-                }
-            ?>
+                </div>
+              </div>
+            </div>
+            <br>
+            <br>";
+          }
+        }
+      ?>
       
       
     <!-- End Right Column -->
