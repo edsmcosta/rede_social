@@ -12,6 +12,52 @@
     echo '</script>';
   } 
   
+  function accept_invite( $id_invite ){
+    // Conecta ao BD
+    include_once "bd_connect.php";
+
+    // Cria o comando SQL
+    $sql = "UPDATE invites SET id_status = 1 WHERE id_invite = $id_invite";
+
+    // Executa no BD
+    $retorno = $conexao->query($sql);
+
+    if (!$retorno) {
+      echo "<script>";
+      echo "alert('Erro na inserção!');";
+      echo "</script>";
+    }
+    else{
+      echo "<script>";
+      echo "alert('Relacionamento atualizado!');";
+      echo "</script>";
+    }
+    
+  }
+
+  function reject_invite( $id_invite ){
+    // Conecta ao BD
+    include_once "bd_connect.php";
+
+    // Cria o comando SQL
+    $sql = "UPDATE invites SET id_status = 3 WHERE id_invite = $id_invite";
+
+    // Executa no BD
+    $retorno = $conexao->query($sql);
+
+    if (!$retorno) {
+      echo "<script>";
+      echo "alert('Erro na inserção!');";
+      echo "</script>";
+    }
+    else{
+      echo "<script>";
+      echo "alert('Relacionamento atualizado!');";
+      echo "</script>";
+    }
+    
+  }
+  
 	$follow 	= $_GET["follow"];
 	$unfollow 	= $_GET["unfollow"];
 	$follow_user = $_GET["follow_user"];
@@ -133,6 +179,7 @@
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="css/home.css">
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </style>
@@ -147,7 +194,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <!-- Left Column -->
     <div class="w3-col m3">
       <!-- Profile -->
-      <div class="w3-card w3-round w3-white">
+      <div class="w3-card w3-round">
         <div class="w3-container">
          <h4 class="w3-center"><?php echo $_SESSION["user_name"];?></h4>
          <p class="w3-center"><img src='<?php echo $_SESSION["user_picture"] ;?>' class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
@@ -207,15 +254,15 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Social Media template by w3.css</h6>
-              <p contenteditable="true" class="w3-border w3-padding">Status: Feeling Blue</p>
+              <h6 class="w3-opacity">Write your post</h6>
+              <p><input type="text" class="textpost w3-border w3-padding" placeholder="Write your msg"></p>
               <button type="button" class="w3-button w3-theme"><i class="fa fa-edit"></i>  Post</button> 
             </div>
           </div>
         </div>
       </div>
       
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+      <div class="w3-container postC  w3-card w3-white w3-round w3-margin"><br>
         <img src="/w3images/avatar2.png" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
         <span class="w3-right w3-opacity">1 min</span>
         <h4>John Doe</h4><br>
@@ -233,7 +280,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
       </div>
       
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+      <div class="w3-container postC w3-card w3-white w3-round w3-margin"><br>
         <img src="/w3images/avatar5.png" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
         <span class="w3-right w3-opacity">16 min</span>
         <h4>Jane Doe</h4><br>
@@ -283,7 +330,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         // Conecta ao BD
         include_once "bd_connect.php";
 
-        $sql = "SELECT inv.id_invite, us.id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
+        $sql = "SELECT inv.id_invite as id_invite, us.id_user as id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
 
         $retorno = $conexao -> query($sql);
 
@@ -297,6 +344,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
           if($registro["id_status"] = 2){
 
+            $id_invite = $registro["id_invite"];
             $nome = $registro["user_name"];
             $phone = $registro["user_phone"];
             $picture = $registro["user_picture"];
@@ -339,11 +387,11 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <br>
 
 <!-- Footer -->
-<footer class="w3-container w3-theme-d3 w3-padding-16">
+<footer class="w3-container foot w3-theme-d3 w3-padding-16">
   <h5>Footer</h5>
 </footer>
 
-<footer class="w3-container w3-theme-d5">
+<footer class="w3-container foot2 w3-theme-d5">
   <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
 </footer>
  
