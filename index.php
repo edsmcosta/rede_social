@@ -31,24 +31,35 @@
       // Cria o comando SQL
         $sql = "SELECT * FROM users WHERE login = '$login' AND password = '$password'";
         // Executa no BD
-        $retorno = $conexao->query($sql);
+        $retorno1 = $conexao->query($sql);
 
         // Executou?
-        if ($retorno = $retorno->fetch_array()) {
+        if ($registro = $retorno1->fetch_array()) {
 
-          $user_name 		= $retorno["name"];
-          $id_user 		= $retorno["id_user"];
-          $user_picture 		= $retorno["picture"];
-          $user_phone 	= $retorno["phone"];
+          $user_name 		= $registro["name"];
+          $id_user 		= $registro["id_user"];
+          $user_picture 		= $registro["picture"];
+          $user_phone 	= $registro["phone"];
 
-          $_SESSION["logado"] 			= "ok";
-          $_SESSION["user_name"] 		= $user_name;
-          $_SESSION["id_user"] 		= $id_user;
-          $_SESSION["user_picture"] 		= $user_picture;
-          $_SESSION["user_phone"] 	= $user_phone;
+        // Cria o comando SQL
+        $sql = "SELECT  FROM invites iv LEFT JOIN user u ON iv.id_sender = $id_user WHERE  AND password = '$password'";
+        // Executa no BD
+        $retorno2 = $conexao->query($sql);
+
+          //logged user details
+          $_SESSION["logado"]   = "ok";
+          $_SESSION["user_name"]  = $user_name;
+          $_SESSION["id_user"]  = $id_user;
+          $_SESSION["user_picture"] = $user_picture;
+          $_SESSION["user_phone"] = $user_phone;
+          if($retorno2){
+          $_SESSION["user_friends"] = "";
+          }
+          //page load information
+          $_SESSION["id_profile"] = $id_user;
 
           echo "<script>
-                    location.href='home.php';
+                    location.href='home.php?id_profile=$id_user';
                 </script>"
           ;
 
