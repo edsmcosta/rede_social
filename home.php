@@ -35,6 +35,8 @@
     
   }
 
+
+
   function reject_invite( $id_invite ){
     // Conecta ao BD
     include_once "bd_connect.php";
@@ -60,8 +62,9 @@
   
 	$follow 	= $_GET["follow"];
 	$unfollow 	= $_GET["unfollow"];
+  $like_post = $_GET["like_post"];
 	$follow_user = $_GET["follow_user"];
-	$like = $_GET["artefact"];
+	$like = $_GET["object"];
   $id_user 	= $_SESSION["id_user"];
 
   // Conecta ao BD
@@ -71,7 +74,7 @@
 
       // Obtem dados do POST
       $post_image = addslashes(  $_POST["post_image"] );
-      $post_text = addslashes(  md5($_POST["post_text"]) );
+      $post_text = addslashes(  $_POST["post_text"] );
 
       // Valida campos obrigatórios
       if ($post_image != "" && $post_text != "" ) {
@@ -129,7 +132,7 @@
 			}
 		}
 		else{
-			echo "<script>alert('Você já segue esta pessoa')</script>";
+			echo "<script>alert('Você já tem/solicitou a amizade desta pessoa')</script>";
 		}	
   }
   
@@ -140,7 +143,7 @@
 				FROM invite 
 				WHERE (id_sender='$id_sender' AND id_receiver='$id_receiver') 
         OR (id_sender='$id_receiver' AND id_receiver='$id_sender')
-        AND NOT FIND_IN_SET(id_status, '1');";
+        AND NOT FIND_IN_SET(id_status, '1,2');";
         
 		$retorno_follow = $con -> query($sql);
     $registro = $retorno_follow -> fetch_array();
@@ -148,7 +151,7 @@
 		if ($registro[0]) {
 
 			$sql = "INSERT INTO invite (id_sender, id_receiver)
-          VALUES ('$id_sender', '$id_receiver')";
+          VALUES ('$id_s  ender', '$id_receiver')";
           
       $retorno_invite = $con -> query( $sql );
       
@@ -166,8 +169,60 @@
 		else{
 			echo "<script>alert('Você não segue esta pessoa')</script>";
 		}	
-	}
+  }
   
+  // like post
+	if ($like_post) {
+
+    $post_tbl = $_GET["id_post"];
+    
+		$sql = "SELECT * 
+				FROM post_likes 
+				WHERE (id_post = $post_tbl AND id_user = $id_user);";
+        
+		$retorno_follow = $con -> query($sql);
+    $registro = $retorno_follow -> fetch_array();
+    
+		if (!$registro[0]) {
+
+			$sql = "INSERT INTO post_likes (id_post, id_user)
+          VALUES ('$id_post', '$id_user')";
+          
+      $retorno_like = $con -> query( $sql );
+      
+			if (!$retorno_like) {
+				echo "<script>";
+				echo "alert('Erro na inserção!');";
+				echo "</script>";
+			}
+			else{
+        echo "<script>";
+				echo "alert('Liked!');";
+				echo "</script>";
+			}
+		}
+		else{
+      $sql = "DELETE 
+      FROM post_likes 
+      WHERE id_post = $post_tbl AND id_user = $id_user;";
+      
+      $retorno_like = $con -> query( $sql );
+      $registro = $retorno_like -> fetch_array();
+
+      
+      
+			if (!$retorno_like) {
+				echo "<script>";
+				echo "alert('Erro na inserção!');";
+				echo "</script>";
+			}
+			else{
+        echo "<script>";
+				echo "alert('Unliked!');";
+				echo "</script>";
+			}
+		}	
+  }  
 ?>
 <!DOCTYPE html>
 <html>
@@ -261,6 +316,78 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           </div>
         </div>
       </div>
+
+      <?php 
+				if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
+					$id_profile = $_SESSION['id_profile'];
+					$sql = "SELECT * FROM posts WHERE id_user='$id_profile' ORDER BY created_at DESC";
+				}
+				else{
+					$sql = "SELECT users.id_user, users.name, users.picture, posts.* 
+                  FROM posts 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE posts.id_user = $id_user
+                  UNION 
+                  SELECT users.id_user, users.name, users.picture, posts.* 
+                  FROM invites 
+                  INNER JOIN posts ON invites.id_receiver = posts.id_user
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_sender = $id_user 
+                  UNION 
+                  SELECT users.id_user, users.name, users.picture, posts.* 
+                  FROM invites 
+                  INNER JOIN posts ON invites.id_sender = posts.id_user 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_receiver = $id_user 
+                  ORDER BY created_at DESC;";
+        }
+        $retorno_posts = $conexao -> query($sql);
+
+				while ($registro = $retorno_posts -> fetch_array()) {
+          
+					$id_post 		        = $registro['id_post'];
+          $post_user_id 		  = $registro['id_user'];
+          $post_user_name     = $registro['name'];
+          $post_user_img      = $registro['picture'];
+					$post_img 		      = $registro['post_img'];
+          $post_text 		      = $registro['post_text'];
+          $post_data 		      = $registro['created_at'];
+
+              $sql = "SELECT COUNT(id_like) as n_likes
+                      FROM post_likes 
+                      WHERE id_post=$id_post;";
+
+              $return = $conexao -> query($sql);
+              $return = $return -> fetch_array();
+
+          $post_likes_n = $return["n_likes"];
+
+              $sql = "SELECT COUNT(id_like) as n_likes
+              FROM post_likes 
+              WHERE id_post=$id_post AND id_user = $id_user;";
+
+              $return = $conexao -> query($sql);
+              $return = $return -> fetch_array();
+
+          $user_like_post = $return["n_likes"];
+
+            $sql = "SELECT c.* , u.name , u.picture 
+            FROM comments c
+            INNER JOIN users u ON c.id_user = u.id_user
+            WHERE id_post = $id_post;";
+
+            $return = $conexao -> query($sql);
+            $return = $return -> fetch_array();
+          
+          $post_comments = $return["n_likes"];
+          var_dump($post_likes_n."//");
+          var_dump($post_comments."//");
+          var_dump($user_like_post."//");
+			?>
+
+      <?php
+				}
+			?>
       
       <div class="w3-container postC  w3-card w3-white w3-round w3-margin"><br>
         <img src="/w3images/avatar2.png" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
@@ -308,29 +435,9 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <!-- Right Column -->
     <div class="w3-col m2">
       
-      <!-- <br>
-      
-      <div class="w3-card w3-round w3-white w3-center">
-        <div class="w3-container">
-          
-          <p>Friend Request</p>
-          <img src='<?php echo $_SESSION["user_picture"];?>' alt="Avatar" style="width:50%"><br>
-          <span><?php echo $_SESSION["user_name"];?></span>
-          <div class="w3-row w3-opacity">
-            <div class="w3-half">
-              <button class="w3-button w3-block w3-green w3-section" title="Accept"><i class="fa fa-check"></i></button>
-            </div>
-            <div class="w3-half">
-              <button class="w3-button w3-block w3-red w3-section" title="Decline"><i class="fa fa-remove"></i></button>
-            </div>
-          </div>
-        </div>
-      </div> -->
       <?php
-        // Conecta ao BD
-        include_once "bd_connect.php";
 
-        $sql = "SELECT inv.id_invite as id_invite, us.id_user as id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user;";
+        $sql = "SELECT inv.id_invite as id_invite, us.id_user as id_user , us.name as user_name, us.picture as user_picture, us.phone as user_phone FROM invites AS inv INNER JOIN invite_status as inv_st ON inv.id_status = inv_st.id_status INNER JOIN users as us ON inv.id_sender = us.id_user WHERE inv.id_receiver = $id_user AND inv.id_status = 2";
 
         $retorno = $conexao -> query($sql);
 
