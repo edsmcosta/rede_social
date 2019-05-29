@@ -311,7 +311,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
           <div id="<?php echo $id_post; ?>" class="w3-container postC  w3-card w3-white w3-round w3-margin"><br>
             <img src="<?php echo $post_user_image; ?>" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-            <h4><a href="#"><?php echo $post_user_name; ?></a><br></h4> 
+            <h4><a href="home.php?id_user=<?php echo $id_profile ?>"><?php echo $post_user_name; ?></a><br></h4> 
             <div id="bt">
             <a  href=# class="w3-button w3-block w3-green w3-section" title="Invite"><i class="far fa-paper-plane"></i></a>
             <a  href=# class="w3-button w3-block w3-red w3-section" title="Dismiss"><i class="fa fa-remove"></i></a>
@@ -360,7 +360,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       
                 <p>Friend Request</p>
                 <img src='$picture' alt='Avatar' style='width:50%'><br>
-                <span>$nome</span>
+                <span><a href=home.php?id_user=$id_profile>$nome</a></span>
                 <div class='w3-row w3-opacity'>
                   <div class='w3-half'>
                     <a href='accept.php?id_invite=$id_invite' class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></a>

@@ -372,7 +372,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       
                 <p>Friend Request</p>
                 <img src='$picture' alt='Avatar' style='width:50%'><br>
-                <span>$nome</span>
+                <span><a href=home.php?id_profile=$id_sender>$nome</a></span>
                 <div class='w3-row w3-opacity'>
                   <div class='w3-half'>
                     <a href='accept.php?id_invite=$id_invite' class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></a>
