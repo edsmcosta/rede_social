@@ -1,6 +1,8 @@
 <?php 
 	error_reporting(1);
   session_start();
+
+  include_once "bd_connect.php";
   
 	if ($_SESSION["logado"] != 'ok') {
 		header("Location: index.php");
@@ -171,7 +173,7 @@
 		}	
   }
   
-  // like post
+  // like/unlike post
 	if ($like_post) {
 
     $post_tbl = $_GET["id_post"];
@@ -266,6 +268,49 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             <p>Some text..</p>
           </div>
           <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</button>
+          <?php 
+				if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
+					$id_profile = $_SESSION['id_profile'];
+          $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                  FROM invites 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_sender = $id_profile 
+                  UNION 
+                  SELECT users.id_user, users.name, users.picture, invites.created_at
+                  FROM invites 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_receiver = $id_profile 
+                  ORDER BY created_at DESC;";
+				}
+				else{
+					$sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                  FROM invites 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_sender = $id_user 
+                  UNION 
+                  SELECT users.id_user, users.name, users.picture, invites.created_at
+                  FROM invites 
+                  INNER JOIN users ON posts.id_user = users.id_user
+                  WHERE invites.id_receiver = $id_user 
+                  ORDER BY created_at DESC;";
+        }
+
+        $retorno_posts = $conexao -> query($sql);
+        if($retorno_posts){
+          $_SESSION["user_friends"] = $retorno_posts;
+
+          while ($registro = $retorno_posts -> fetch_array()) {
+            $post_user_id 		  = $registro['id_user'];
+            $post_user_name     = $registro['name'];
+            $post_user_img      = $registro['picture'];
+            $post_data 		      = $registro['created_at'];
+
+			?>
+
+      <?php
+          }
+        }
+			?>
           <div id="Demo2" class="w3-hide w3-container">
             <p>Some other text..</p>
           </div>
@@ -351,10 +396,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 					$post_img 		      = $registro['post_img'];
           $post_text 		      = $registro['post_text'];
           $post_data 		      = $registro['created_at'];
-
+          
               $sql = "SELECT COUNT(id_like) as n_likes
-                      FROM post_likes 
-                      WHERE id_post=$id_post;";
+              FROM post_likes 
+              WHERE id_post=$id_post;";
 
               $return = $conexao -> query($sql);
               $return = $return -> fetch_array();
@@ -379,9 +424,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             $return = $return -> fetch_array();
           
           $post_comments = $return["n_likes"];
-          var_dump($post_likes_n."//");
-          var_dump($post_comments."//");
-          var_dump($user_like_post."//");
+
 			?>
 
       <?php
@@ -502,6 +545,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </footer>
  
 <script>
+
 // Accordion
 function myFunction(id) {
   var x = document.getElementById(id);
