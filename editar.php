@@ -23,27 +23,32 @@
 
         <div class="form-group">
             <label>Nome</label>
-            <input type="text" name="nome" maxlength="100" required class="form-control">
+            <input type="text" name="nome" maxlength="100" required class="form-control" placeholder="Nome">
         </div>
 
         <div class="form-group">
             <label>Login</label>
-            <input type="text" name="login" maxlength="50" required class="form-control">
+            <input type="text" name="login" maxlength="50" required class="form-control" placeholder="Login">
         </div>
 
         <div class="form-group">
-            <label>Senha</label>
-            <input type="password" name="password1" maxlength="50" required class="form-control">
+            <label>Senha Antiga</label>
+            <input type="password" name="password1" maxlength="50" required class="form-control" placeholder="Senha Antiga">
         </div>
 
         <div class="form-group">
-            <label>Confirmar Senha</label>
-            <input type="password" name="password2" maxlength="50" required class="form-control">
+            <label>Senha Nova</label>
+            <input type="password" name="password2" maxlength="50" required class="form-control" placeholder="Nova Senha">
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar Senha Nova</label>
+            <input type="password" name="password3" maxlength="50" required class="form-control" placeholder="Confirmar Senha">
         </div>
 
         <div class="form-group">
             <label>Telefone</label>
-            <input type="text" name="telefone" maxlength="50" class="form-control">
+            <input type="text" name="telefone" maxlength="50" class="form-control" placeholder="Telefone">
         </div>
 
 
