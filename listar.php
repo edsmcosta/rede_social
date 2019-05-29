@@ -1,9 +1,7 @@
 <?php 
 	error_reporting(1);
   session_start();
-
-  include_once "bd_connect.php";
-  
+   
 	if ($_SESSION["logado"] != 'ok') {
 		header("Location: index.php");
   }
@@ -130,7 +128,7 @@
 		}	
   }
   
-  // like/unlike post
+  // like post
 	if ($like_post) {
     
 		$sql = "SELECT * 
@@ -192,7 +190,7 @@
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/listar.css">
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </style>
@@ -222,7 +220,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-white">
         <a href="buscar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Search Friends</a>          <div id="Demo1" class="w3-hide w3-container">
           </div>
-            <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
+          <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
           </div>
         </div>      
       </div>
@@ -238,14 +236,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
-            <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Write your post</h6>
-              <form method="POST">
-                  <input type="text" id="textpostagem" class=" textpost w3-border w3-padding" placeholder="Write your msg" name="post_text">
-                  <input type="text" id="textpostagem" class="textpost w3-border w3-padding" placeholder="Img link" name="post_image">
-                  <button type="submit" id="butaopost" class="w3-button w3-theme" name="post_user" value="<?php echo $id_user; ?>"><i class="fa fa-edit"></i>  Post</button> 
-              </form>
-            </div>
+
           </div>
         </div>
       </div>
@@ -285,10 +276,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 					$post_image 		      = $registro['post_image'];
           $post_text 		      = $registro['post_text'];
           $post_data 		      = $registro['created_at'];
-          
+
               $sql = "SELECT COUNT(id_like) as n_likes
-              FROM post_likes 
-              WHERE id_post=$id_post;";
+                      FROM post_likes 
+                      WHERE id_post=$id_post;";
 
               $return = $conexao -> query($sql);
               $return = $return -> fetch_array();
@@ -320,18 +311,9 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
           <div id="<?php echo $id_post; ?>" class="w3-container postC  w3-card w3-white w3-round w3-margin"><br>
             <img src="<?php echo $post_user_image; ?>" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
-            <span class="w3-right w3-opacity"><?php echo $post_data; ?></span>
-            <h4><?php echo $post_user_name; ?></h4><br>
-            <hr class="w3-clear">
-            <p><?php echo $post_text; ?></p>
-              <div class="w3-row-padding" style="margin:0 -16px">
-                <div class="w3-half">
-                  <img src="<?php echo $post_image; ?>" style="width:100%" class="w3-margin-bottom">
-                </div>
-            </div>
-            <a href="home.php?like_post=<?php echo $id_post; ?>" type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>     <?php echo $post_likes_n ?>  Like </a> 
-            <a href="post.php?id_post=<?php echo $id_post;?>" type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</a> 
-          </div>
+            <h4><a href="#"><?php echo $post_user_name; ?></a><br></h4> 
+            <a id="bt" href=# class="w3-button w3-block w3-red w3-section" title="Dismiss"><i class="fa fa-remove"></i></a>
+        </div>
       <?php
 				}
 			?>
@@ -374,7 +356,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       
                 <p>Friend Request</p>
                 <img src='$picture' alt='Avatar' style='width:50%'><br>
-                <span><a href=home.php?id_profile=$id_sender>$nome</a></span>
+                <span>$nome</span>
                 <div class='w3-row w3-opacity'>
                   <div class='w3-half'>
                     <a href='accept.php?id_invite=$id_invite' class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></a>
@@ -405,7 +387,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <?php include_once "rodape.php";?>
  
 <script>
-
 // Accordion
 function myFunction(id) {
   var x = document.getElementById(id);

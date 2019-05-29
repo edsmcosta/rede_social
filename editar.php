@@ -14,7 +14,7 @@
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Edit User</title>
+    <title>Road Free</title>
   </head>
   <body>
   <?php include_once "topo.php";?>
@@ -32,18 +32,8 @@
         </div>
 
         <div class="form-group">
-            <label>Senha Antiga</label>
-            <input type="password" name="password1" maxlength="50" required class="form-control" placeholder="Senha Antiga">
-        </div>
-
-        <div class="form-group">
             <label>Senha Nova</label>
             <input type="password" name="password2" maxlength="50" required class="form-control" placeholder="Nova Senha">
-        </div>
-
-        <div class="form-group">
-            <label>Confirmar Senha Nova</label>
-            <input type="password" name="password3" maxlength="50" required class="form-control" placeholder="Confirmar Senha">
         </div>
 
         <div class="form-group">

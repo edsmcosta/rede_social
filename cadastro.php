@@ -18,7 +18,6 @@ function console_log( $data ){
         // Obtem dados do POST
         $name = addslashes( $_POST["nome"] );
         $phone = addslashes( $_POST["telefone"] );
-        $email = addslashes( $_POST["email"] );
         $login = addslashes( $_POST["login"] );
         $password = addslashes( md5($_POST["password1"]) );
         if( strlen($_POST["foto"]) != 0) { 
@@ -28,7 +27,7 @@ function console_log( $data ){
         }
 
         // Valida campos obrigatórios
-        if ($name != "" && $login != "" && $password != "" ) {
+        if ($name != "" && $login != "" && $password != "") {
             $sql = "SELECT * 
                             FROM users
                             WHERE login = '$login' ";
@@ -55,7 +54,7 @@ function console_log( $data ){
                         console_log( $retorno );
 
                     } else {
-
+                        
                         echo "<script>
                                 alert('Erro ao Cadastrar!');
                             </script>"
@@ -71,11 +70,12 @@ function console_log( $data ){
                         location.href = 'cadastro.php'
                     </script>";
             }
-        } else {
-            echo "<script>
-                    alert('Preencha todos os campos!');
-                </script>"
-            ;
+        } else {    
+                echo "<script>
+                        alert('Preencha todos os campos!');
+                    </script>"
+                ;
+            
         }
 
     }
@@ -97,7 +97,7 @@ function console_log( $data ){
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Cadastro</title>
+    <title>Road Free</title>
   </head>
   <body>
  <fieldset>
@@ -117,11 +117,6 @@ function console_log( $data ){
         <div class="form-group">
             <label>Senha</label>
             <input type="password" name="password1" maxlength="50" required class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label>Confirmar Senha</label>
-            <input type="password" name="password2" maxlength="50" required class="form-control">
         </div>
 
         <div class="form-group">
