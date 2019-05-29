@@ -1,7 +1,9 @@
 <?php 
 	error_reporting(1);
   session_start();
-   
+
+  include_once "bd_connect.php";
+  
 	if ($_SESSION["logado"] != 'ok') {
 		header("Location: index.php");
   }
@@ -128,7 +130,7 @@
 		}	
   }
   
-  // like post
+  // like/unlike post
 	if ($like_post) {
     
 		$sql = "SELECT * 
@@ -220,7 +222,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-white">
         <a href="buscar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Search Friends</a>          <div id="Demo1" class="w3-hide w3-container">
           </div>
-          <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
+            <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
           </div>
         </div>      
       </div>
@@ -283,10 +285,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 					$post_image 		      = $registro['post_image'];
           $post_text 		      = $registro['post_text'];
           $post_data 		      = $registro['created_at'];
-
+          
               $sql = "SELECT COUNT(id_like) as n_likes
-                      FROM post_likes 
-                      WHERE id_post=$id_post;";
+              FROM post_likes 
+              WHERE id_post=$id_post;";
 
               $return = $conexao -> query($sql);
               $return = $return -> fetch_array();
@@ -403,6 +405,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <?php include_once "rodape.php";?>
  
 <script>
+
 // Accordion
 function myFunction(id) {
   var x = document.getElementById(id);
