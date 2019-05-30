@@ -226,41 +226,41 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           </div>
           <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</button>
           <?php 
-				if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
-					$id_profile = $_SESSION['id_profile'];
-          $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                  FROM invites 
-                  INNER JOIN users ON posts.id_user = users.id_user
-                  WHERE invites.id_sender = $id_profile 
-                  UNION 
-                  SELECT users.id_user, users.name, users.picture, invites.created_at
-                  FROM invites 
-                  INNER JOIN users ON posts.id_user = users.id_user
-                  WHERE invites.id_receiver = $id_profile 
-                  ORDER BY created_at DESC;";
-				}
-				else{
-					$sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                  FROM invites 
-                  INNER JOIN users ON posts.id_user = users.id_user
-                  WHERE invites.id_sender = $id_user 
-                  UNION 
-                  SELECT users.id_user, users.name, users.picture, invites.created_at
-                  FROM invites 
-                  INNER JOIN users ON posts.id_user = users.id_user
-                  WHERE invites.id_receiver = $id_user 
-                  ORDER BY created_at DESC;";
-        }
+            if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
+              $id_profile = $_SESSION['id_profile'];
+              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_sender = $id_profile 
+                      UNION 
+                      SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_receiver = $id_profile 
+                      ORDER BY created_at DESC;";
+            }
+            else{
+              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_sender = $id_user 
+                      UNION 
+                      SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_receiver = $id_user 
+                      ORDER BY created_at DESC;";
+            }
 
-        $retorno_posts = $conexao -> query($sql);
-        if($retorno_posts){
-          $_SESSION["user_friends"] = $retorno_posts;
+            $retorno_posts = $conexao -> query($sql);
+            if($retorno_posts){
+              $_SESSION["user_friends"] = $retorno_posts;
 
-          while ($registro = $retorno_posts -> fetch_array()) {
-            $post_user_id 		  = $registro['id_user'];
-            $post_user_name     = $registro['name'];
-            $post_user_img      = $registro['picture'];
-            $post_data 		      = $registro['created_at'];
+              while ($registro = $retorno_posts -> fetch_array()) {
+                $post_user_id 		  = $registro['id_user'];
+                $post_user_name     = $registro['name'];
+                $post_user_img      = $registro['picture'];
+                $post_data 		      = $registro['created_at'];
 
 			?>
 
