@@ -1,3 +1,69 @@
+<?php 
+    error_reporting(1);
+    session_start();
+    
+    if ($_SESSION["logado"] != 'ok') {
+        header("Location: index.php");
+    }
+
+    function console_log( $data ){
+        echo '<script>';
+        echo 'console.log('. json_encode( $data ) .')';
+        echo '</script>';
+      } 
+
+    $id_user = $_SESSION["id_user"];
+
+    if($_POST["edit_user_button"] != NULL){
+        
+        include_once "bd_connect.php";
+
+        $new_name = addslashes( $_POST["nome"] );
+        $new_login = addslashes( $_POST["login"] );
+        $new_phone = addslashes( $_POST["telefone"] );
+        $new_image = addslashes( $_POST["foto"] );
+
+        if($_POST["password3"] != "" && $_POST["password3"] = $_POST["password2"]){
+            $new_password = addslashes( $_POST["password3"] );
+        }else{
+            $new_password = addslashes( $_POST["password1"] );
+        }
+
+        // Valida campos obrigatórios
+        if ($new_name != "" && $new_login != "" && $new_password != "" ) {
+
+                $sql = "UPDATE users 
+                        SET 
+                              'name' = '$new_name'
+                            , 'login' = '$new_login'
+                            , 'password' = '$new_password'
+                            , 'picture' = '$new_picture'
+                            , 'phone' = '$new_phone'
+                        WHERE id_user = $id_user"
+                ;
+                
+            $retorno_edit = $conexao -> query($sql);
+
+            var_dump($retorno_edit);
+        
+            if ($retorno_edit == true) {
+                echo "<script>
+                        alert('Editado com sucesso!!')
+                        location.href = 'cadastro.php'
+                      </script>";
+
+            }else{
+                echo "<script>alert('Não foi possível editar o contato ')</script>";
+            }
+        } else {
+            echo "<script>
+                    alert('Preencha todos os campos!');
+                </script>"
+            ;
+        }  
+    }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,39 +83,74 @@
     <title>Road Free</title>
   </head>
   <body>
-  <?php include_once "topo.php";?>
+
+  <?php include_once "topo.php";
+        var_dump($id_user);    
+    ?>
     <h2 class='w3-center'>Change Settings</h2>
-    <form class='w3-center' method="POST">
+    <?php
+      include_once "bd_connect.php";
+        $sql = "SELECT * 
+                FROM users 
+                WHERE id_user='$id_user';";
+        
+        $retorno_follow = $conexao -> query($sql);
+        $registro = $retorno_follow -> fetch_array();
+    
+        if ($registro[0]) {
 
-        <div class="form-group">
-            <label>Nome</label>
-            <input type="text" name="nome" maxlength="100" required class="form-control" placeholder="Nome">
-        </div>
+            $name = $registro["name"];
+            $login = $registro["login"];
+            $phone = $registro["phone"];
+            $image = $registro["picture"];
 
-        <div class="form-group">
-            <label>Login</label>
-            <input type="text" name="login" maxlength="50" required class="form-control" placeholder="Login">
-        </div>
+        
+      ?>
+        <form class='w3-center' method="POST">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" value="<?php echo $name ;?>" name="nome" maxlength="100" required class="form-control" placeholder="Nome">
+            </div>
 
-        <div class="form-group">
-            <label>Senha Nova</label>
-            <input type="password" name="password2" maxlength="50" required class="form-control" placeholder="Nova Senha">
-        </div>
+            <div class="form-group">
+                <label>Login</label>
+                <input type="text" value="<?php echo $login ;?>" name="login" maxlength="50" required class="form-control" placeholder="Login">
+            </div>
 
-        <div class="form-group">
-            <label>Telefone</label>
-            <input type="text" name="telefone" maxlength="50" class="form-control" placeholder="Telefone">
-        </div>
+            <div class="form-group">
+                <label>Senha Antiga</label>
+                <input type="password" value="<?php echo "" ;?>" name="password1" maxlength="50" class="form-control" placeholder="Senha Antiga">
+            </div>
 
+            <div class="form-group">
+                <label>Senha Nova</label>
+                <input type="password" value="<?php echo "" ;?>" name="password2" maxlength="50"  class="form-control" placeholder="Nova Senha">
+            </div>
 
-        <div class="form-group">
-            <label>Foto</label>
-            <input type="text" name="foto" class="form-control">
-        </div>
+            <div class="form-group">
+                <label>Confirmar Senha Nova</label>
+                <input type="password" value="<?php echo "" ;?>" name="password3" maxlength="50"  class="form-control" placeholder="Confirmar Senha">
+            </div>
 
-        <button type="submit" class = "w3-btn w3-blue w3-border w3-border-blue w3-round-xlarge">Cadastrar</button>
-        <a class ="w3-btn w3-red w3-border w3-border-red w3-round-xlarge" href="index.php">Voltar</a>    
-    </form>  
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="text" value="<?php echo $phone ;?>" name="telefone" maxlength="50" class="form-control" placeholder="Telefone">
+            </div>
+            <div class="form-group">
+                <label>Foto</label>
+                <input type="text" value="<?php echo $image ;?>" name="foto" class="form-control">
+            </div>
+
+            <button type="submit" name="edit_user_button" class="w3-btn w3-blue w3-border w3-border-blue w3-round-xlarge">Cadastrar</button>
+            <a class ="w3-btn w3-red w3-border w3-border-red w3-round-xlarge" href="home.php">Voltar</a>    
+        </form>  
+    
+    <?php
+                      }
+                      else{
+                          echo "<script>alert('Seu usuário sumiu! hehe')</script>";
+                      }	
+        ?>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

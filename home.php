@@ -222,7 +222,78 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-white">
         <a href="buscar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Search Friends</a>          <div id="Demo1" class="w3-hide w3-container">
           </div>
-            <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
+
+          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</button>
+          <?php 
+            if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
+              $id_profile = $_SESSION['id_profile'];
+              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_sender = $id_profile 
+                      UNION 
+                      SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_receiver = $id_profile 
+                      ORDER BY created_at DESC;";
+            }
+            else{
+              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_sender = $id_user 
+                      UNION 
+                      SELECT users.id_user, users.name, users.picture, invites.created_at
+                      FROM invites 
+                      INNER JOIN users ON posts.id_user = users.id_user
+                      WHERE invites.id_receiver = $id_user 
+                      ORDER BY created_at DESC;";
+            }
+
+            $retorno_posts = $conexao -> query($sql);
+            if($retorno_posts){
+              $_SESSION["user_friends"] = $retorno_posts;
+
+              while ($registro = $retorno_posts -> fetch_array()) {
+                $post_user_id 		  = $registro['id_user'];
+                $post_user_name     = $registro['name'];
+                $post_user_img      = $registro['picture'];
+                $post_data 		      = $registro['created_at'];
+
+			?>
+
+      <?php
+          }
+        }
+			?>
+          <div id="Demo2" class="w3-hide w3-container">
+            <p>Some other text..</p>
+          </div>
+          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="far fa-images fa-fw w3-margin-right"></i> My Photos</button>
+          <div id="Demo3" class="w3-hide w3-container">
+         <div class="w3-row-padding">
+         <br>
+           <div class="w3-half">
+             <img src="/w3images/lights.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+           <div class="w3-half">
+             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+           <div class="w3-half">
+             <img src="/w3images/mountains.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+           <div class="w3-half">
+             <img src="/w3images/forest.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+           <div class="w3-half">
+             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+           <div class="w3-half">
+             <img src="/w3images/snow.jpg" style="width:100%" class="w3-margin-bottom">
+           </div>
+         </div>
+
           </div>
         </div>      
       </div>
