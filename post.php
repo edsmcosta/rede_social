@@ -1,9 +1,7 @@
 <?php 
 	error_reporting(1);
   session_start();
-
-  include_once "bd_connect.php";
-  
+   
 	if ($_SESSION["logado"] != 'ok') {
 		header("Location: index.php");
   }
@@ -130,7 +128,7 @@
 		}	
   }
   
-  // like/unlike post
+  // like post
 	if ($like_post) {
     
 		$sql = "SELECT * 
@@ -192,7 +190,7 @@
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
-<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/post.css">
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </style>
@@ -220,80 +218,13 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <!-- Accordion -->
       <div class="w3-card w3-round">
         <div class="w3-white">
-        <a href="buscar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Search Friends</a>          <div id="Demo1" class="w3-hide w3-container">
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fas fa-search fa-fw w3-margin-right"></i> Search Friends</button>
+          <div id="Demo1" class="w3-hide w3-container">
+            <p>Some text..</p>
           </div>
-
           <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</button>
-          <?php 
-            if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
-              $id_profile = $_SESSION['id_profile'];
-              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_sender = $id_profile 
-                      UNION 
-                      SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_receiver = $id_profile 
-                      ORDER BY created_at DESC;";
-            }
-            else{
-              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_sender = $id_user 
-                      UNION 
-                      SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_receiver = $id_user 
-                      ORDER BY created_at DESC;";
-            }
-
-            $retorno_posts = $conexao -> query($sql);
-            if($retorno_posts){
-              $_SESSION["user_friends"] = $retorno_posts;
-
-              while ($registro = $retorno_posts -> fetch_array()) {
-                $post_user_id 		  = $registro['id_user'];
-                $post_user_name     = $registro['name'];
-                $post_user_img      = $registro['picture'];
-                $post_data 		      = $registro['created_at'];
-
-			?>
-
-      <?php
-          }
-        }
-			?>
           <div id="Demo2" class="w3-hide w3-container">
             <p>Some other text..</p>
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="far fa-images fa-fw w3-margin-right"></i> My Photos</button>
-          <div id="Demo3" class="w3-hide w3-container">
-         <div class="w3-row-padding">
-         <br>
-           <div class="w3-half">
-             <img src="/w3images/lights.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/mountains.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/forest.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/snow.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-         </div>
-
           </div>
         </div>      
       </div>
@@ -309,14 +240,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
-            <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Write your post</h6>
-              <form method="POST">
-                  <input type="text" id="textpostagem" class=" textpost w3-border w3-padding" placeholder="Write your msg" name="post_text">
-                  <input type="text" id="textpostagem" class="textpost w3-border w3-padding" placeholder="Img link" name="post_image">
-                  <button type="submit" id="butaopost" class="w3-button w3-theme" name="post_user" value="<?php echo $id_user; ?>"><i class="fa fa-edit"></i>  Post</button> 
-              </form>
-            </div>
+
           </div>
         </div>
       </div>
@@ -356,10 +280,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 					$post_image 		      = $registro['post_image'];
           $post_text 		      = $registro['post_text'];
           $post_data 		      = $registro['created_at'];
-          
+
               $sql = "SELECT COUNT(id_like) as n_likes
-              FROM post_likes 
-              WHERE id_post=$id_post;";
+                      FROM post_likes 
+                      WHERE id_post=$id_post;";
 
               $return = $conexao -> query($sql);
               $return = $return -> fetch_array();
@@ -401,8 +325,18 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
                 </div>
             </div>
             <a href="home.php?like_post=<?php echo $id_post; ?>" type="button" class="w3-button w3-theme-d1 w3-margin-bottom"><i class="fa fa-thumbs-up"></i>     <?php echo $post_likes_n ?>  Like </a> 
-            <a href="post.php?id_post=<?php echo $id_post;?>" type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</a> 
-          </div>
+            <form class="postagem" method="POST">
+                <input type="text" class="textpost w3-border w3-padding" placeholder="Write your msg" name="post_text">
+                <button type="button" class="bt w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  Comment</button> 
+            </form>
+            <div id="comentarios">
+            <hr class="w3-clear">
+                <img src="<?php echo $post_user_image; ?>" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
+                <span class="w3-right w3-opacity"><?php echo $post_data; ?></span>
+                <h4><?php echo $post_user_name; ?></h4><br>
+                <h3><?php echo $comment ; ?>  O TEXTO VEM AQUI<h3>
+            </div>
+        </div>
       <?php
 				}
 			?>
@@ -445,7 +379,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       
                 <p>Friend Request</p>
                 <img src='$picture' alt='Avatar' style='width:50%'><br>
-                <span><a href=home.php?id_profile=$id_sender>$nome</a></span>
+                <span>$nome</span>
                 <div class='w3-row w3-opacity'>
                   <div class='w3-half'>
                     <a href='accept.php?id_invite=$id_invite' class='w3-button w3-block w3-green w3-section' title='Accept'><i class='fa fa-check'></i></a>
@@ -476,7 +410,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <?php include_once "rodape.php";?>
  
 <script>
-
 // Accordion
 function myFunction(id) {
   var x = document.getElementById(id);

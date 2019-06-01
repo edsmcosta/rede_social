@@ -1,3 +1,15 @@
+
+
+#bt{
+    display: block !important;
+    margin-top: -2% !important;
+    width: 10% !important;
+    margin-left: auto !important;
+}
+
+.textpost{
+    width: 100% !important;
+}
 .w3-container{
     background-color: #ffcc33c2 !important; 
 }
@@ -13,14 +25,4 @@
 }
 .foot2{
     background-color: #3a4b53!important;
-}
-
-#textpostagem {
-    border: 1px solid #ccc!important;
-    width: 100% !important;
-    margin: auto !important;
-    margin-top: 1% !important;
-}
-#butaopost{
-    margin-top: 10px !important;
 }
