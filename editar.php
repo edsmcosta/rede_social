@@ -21,62 +21,76 @@
         $new_name = addslashes( $_POST["nome"] );
         $new_login = addslashes( $_POST["login"] );
         $new_phone = addslashes( $_POST["telefone"] );
-        $new_image = addslashes( $_POST["foto"] );
+        $new_picture = addslashes( $_POST["foto"] );
         $password_change = false;
         if($_POST["password3"] != "" && $_POST["password3"] = $_POST["password2"]){
 
             $new_password = addslashes( md5($_POST["password3"]) );
             $password_change = true;
 
-        }else{
+        }elseif($_POST["password1"] != ""){
 
             $new_password = addslashes( md5($_POST["password1"]) );
             
         }
 
-        // Valida campos obrigatórios
-        if ($new_name != "" && $new_login != "" && $new_password != "" && $new_phone != "" ) {
+        $sql = "SELECT u.id_user
+                FROM users as u
+                WHERE u.id_user = $id_user AND u.password = '$new_password';"
+        ;
 
-                if($password_change){ $cond1 = ", password = '$new_password'";}else{ $cond1 = "";}
-                if($new_picture != ""){ $cond2 = ", picture = '$new_picture'";}else{ $cond2 = "";}
+        $retorno_pass = $conexao -> query($sql);
 
-                $sql = "UPDATE users 
-                        SET 
-                              name = '$new_name'
-                            , login = '$new_login'"
-                            .$cond1
-                            .$cond2
-                            .", phone = '$new_phone'
-                        WHERE id_user = $id_user"
-                ;
-                
-            $retorno_edit = $conexao -> query($sql);
+        if($retorno_pass){
+            // Valida campos obrigatórios
+            if ($new_name != "" && $new_login != "" && $new_password != "" && $new_phone != "" ) {
 
-            var_dump($retorno_edit);
-        
-            if ($retorno_edit == true) {
+                    if($password_change){ $cond1 = ", password = '$new_password'";}else{ $cond1 = "";}
+                    if($new_picture != ""){ $cond2 = ", picture = '$new_picture'";}else{ $cond2 = "";}
 
-                $_SESSION["user_name"]  = $new_name;
-                $_SESSION["user_picture"] = $new_picture;
-                $_SESSION["user_phone"] = $new_phone;
-                $_SESSION["id_profile"] = $id_user;
-                $_SESSION['profile_name'] = $new_name;
-                $_SESSION['profile_picture'] = $new_picture;
-                $_SESSION['profile_phone'] =  $new_phone;
+                    $sql = "UPDATE users 
+                            SET 
+                                name = '$new_name'
+                                , login = '$new_login'"
+                                .$cond1
+                                .$cond2
+                                .", phone = '$new_phone'
+                            WHERE id_user = $id_user"
+                    ;
+                    
+                $retorno_edit = $conexao -> query($sql);
+            
+                if ($retorno_edit == true) {
 
+                    $_SESSION["user_name"]  = $new_name;
+                    $_SESSION["user_picture"] = $new_picture;
+                    $_SESSION["user_phone"] = $new_phone;
+                    $_SESSION["id_profile"] = $id_user;
+                    $_SESSION['profile_name'] = $new_name;
+                    $_SESSION['profile_picture'] = $new_picture;
+                    $_SESSION['profile_phone'] =  $new_phone;
+
+                    echo "<script>
+                            alert('Editado com sucesso!!');
+                            location.href = 'home.php'
+                        </script>";
+
+                }else{
+                    echo "<script>alert('Não foi possível editar o contato ')</script>";
+                }
+            } else {
                 echo "<script>
-                        alert('Editado com sucesso!!')
-                        location.href = 'home.php'
-                      </script>";
-
-            }else{
-                echo "<script>alert('Não foi possível editar o contato ')</script>";
+                        alert('Preencha todos os campos!');
+                    </script>"
+                ;
             }
-        } else {
-            echo "<script>
-                    alert('Preencha todos os campos!');
-                </script>"
-            ;
+        }else{
+                echo "<script>
+                        alert('Informe sua senha atual!');
+                        window.history.back();
+                    </script>"
+                ;
+
         }  
     }
 
@@ -126,17 +140,17 @@
         <form class='w3-center' method="POST">
             <div class="form-group">
                 <label>Nome</label>
-                <input type="text" value="<?php echo $name ;?>" name="nome" maxlength="100" required class="form-control" placeholder="Nome">
+                <input type="text" required value="<?php echo $name ;?>" name="nome" maxlength="100" required class="form-control" placeholder="Nome">
             </div>
 
             <div class="form-group">
                 <label>Login</label>
-                <input type="text" value="<?php echo $login ;?>" name="login" maxlength="50" required class="form-control" placeholder="Login">
+                <input type="text" required value="<?php echo $login ;?>" name="login" maxlength="50" required class="form-control" placeholder="Login">
             </div>
 
             <div class="form-group">
                 <label>Senha Atual</label>
-                <input type="password" value="<?php echo "" ;?>" name="password1" maxlength="50" class="form-control" placeholder="Senha Antiga">
+                <input type="password" required value="<?php echo "" ;?>" name="password1" maxlength="50" class="form-control" placeholder="Senha Antiga">
             </div>
 
             <div class="form-group">
@@ -151,7 +165,7 @@
 
             <div class="form-group">
                 <label>Telefone</label>
-                <input type="text" value="<?php echo $phone ;?>" name="telefone" maxlength="50" class="form-control" placeholder="Telefone">
+                <input type="text" required value="<?php echo $phone ;?>" name="telefone" maxlength="50" class="form-control" placeholder="Telefone">
             </div>
             <div class="form-group">
                 <label>Foto</label>
