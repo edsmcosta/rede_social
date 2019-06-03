@@ -42,7 +42,7 @@
           $user_phone 	= $registro["phone"];
 
         // Cria o comando SQL
-        $sql = "SELECT  FROM invites iv LEFT JOIN user u ON iv.id_sender = $id_user WHERE  AND password = '$password'";
+        $sql = "SELECT * FROM invites iv LEFT JOIN user u ON iv.id_sender = $id_user WHERE  AND password = '$password'";
         // Executa no BD
         $retorno2 = $conexao->query($sql);
 
@@ -52,12 +52,14 @@
           $_SESSION["id_user"]  = $id_user;
           $_SESSION["user_picture"] = $user_picture;
           $_SESSION["user_phone"] = $user_phone;
+          $_SESSION["id_profile"] = $id_user;
+          $_SESSION['profile_name'] = $user_name;
+          $_SESSION['profile_picture'] = $user_picture;
+          $_SESSION['profile_phone'] =  $user_phone;
           if($retorno2){
           $_SESSION["user_friends"] = "";
           }
           //page load information
-          $_SESSION["id_profile"] = $id_user;
-
           echo "<script>
                     location.href='home.php?id_profile=$id_user';
                 </script>"
