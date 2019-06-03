@@ -21,9 +21,42 @@
 	$follow_user = $_GET["follow_user"];
 	$like = $_GET["object"];
   $id_user 	= $_SESSION["id_user"];
+  $profile = $_GET["id_profile"];
 
   // Conecta ao BD
   include_once "bd_connect.php";
+
+  if($profile && $profile != $id_user){
+
+    $sql = "SELECT * FROM users WHERE id_user = $profile";
+    // Executa no BD
+    $retorno = $conexao->query($sql);
+
+    if($registro = $retorno->fetch_array()){
+
+      $_SESSION["id_profile"] = $registro["id_user"];
+      $_SESSION['profile_name'] = $registro["name"];
+      $_SESSION['profile_picture'] = $registro["picture"];
+      $_SESSION['profile_phone'] = $registro["phone"];
+
+    }else{
+
+      echo "<script>";
+      echo "alert('Usuário não encontrado!')";
+      echo "location.href='home.php';";
+      echo "</script>";
+      
+    }
+
+  }else{
+
+    $_SESSION["id_profile"] = $id_user;
+    $_SESSION['profile_name'] = $_SESSION["user_name"];
+    $_SESSION['profile_picture'] = $_SESSION["user_picture"];
+    $_SESSION['profile_phone'] = $_SESSION["user_phone"];     
+
+  }
+  $id_profile = $_SESSION['id_profile'];
   
   if($_POST["post_user"]){
 
@@ -209,10 +242,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <!-- Profile -->
       <div class="w3-card w3-round">
         <div class="w3-container">
-         <h4 class="w3-center"><?php echo $_SESSION["user_name"];?></h4>
-         <p class="w3-center"><img src='<?php echo $_SESSION["user_picture"] ;?>' class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+         <h4 class="w3-center"><?php echo $_SESSION["profile_name"];?></h4>
+         <p class="w3-center"><img src='<?php echo $_SESSION["profile_picture"] ;?>' class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
          <hr>
-         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> <?php echo $_SESSION["user_phone"];?></p>
+         <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> <?php echo $_SESSION["profile_phone"];?></p>
         </div>
       </div>
       <br>
@@ -222,78 +255,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-white">
         <a href="buscar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> Search Friends</a>          <div id="Demo1" class="w3-hide w3-container">
           </div>
-
-          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</button>
-          <?php 
-            if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
-              $id_profile = $_SESSION['id_profile'];
-              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_sender = $id_profile 
-                      UNION 
-                      SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_receiver = $id_profile 
-                      ORDER BY created_at DESC;";
-            }
-            else{
-              $sql = "SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_sender = $id_user 
-                      UNION 
-                      SELECT users.id_user, users.name, users.picture, invites.created_at
-                      FROM invites 
-                      INNER JOIN users ON posts.id_user = users.id_user
-                      WHERE invites.id_receiver = $id_user 
-                      ORDER BY created_at DESC;";
-            }
-
-            $retorno_posts = $conexao -> query($sql);
-            if($retorno_posts){
-              $_SESSION["user_friends"] = $retorno_posts;
-
-              while ($registro = $retorno_posts -> fetch_array()) {
-                $post_user_id 		  = $registro['id_user'];
-                $post_user_name     = $registro['name'];
-                $post_user_img      = $registro['picture'];
-                $post_data 		      = $registro['created_at'];
-
-			?>
-
-      <?php
-          }
-        }
-			?>
-          <div id="Demo2" class="w3-hide w3-container">
-            <p>Some other text..</p>
-          </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="far fa-images fa-fw w3-margin-right"></i> My Photos</button>
-          <div id="Demo3" class="w3-hide w3-container">
-         <div class="w3-row-padding">
-         <br>
-           <div class="w3-half">
-             <img src="/w3images/lights.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/mountains.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/forest.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/nature.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-           <div class="w3-half">
-             <img src="/w3images/snow.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
-         </div>
-
+          <a href="listar.php" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Friends</a>          <div id="Demo2" class="w3-hide w3-container">
           </div>
         </div>      
       </div>
@@ -305,7 +267,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     
     <!-- Middle Column -->
     <div class="w3-col m7">
-    
+
+    <?php 
+      if($id_user == $id_profile){
+    ?>    
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
@@ -320,10 +285,9 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           </div>
         </div>
       </div>
-
+      <?php }?>
       <?php 
 				if ($_SESSION['id_profile'] != $_SESSION["id_user"]) {
-					$id_profile = $_SESSION['id_profile'];
 					$sql = "SELECT * FROM posts WHERE id_user='$id_profile' ORDER BY created_at DESC";
 				}
 				else{
@@ -392,7 +356,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           <div id="<?php echo $id_post; ?>" class="w3-container postC  w3-card w3-white w3-round w3-margin"><br>
             <img src="<?php echo $post_user_image; ?>" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px">
             <span class="w3-right w3-opacity"><?php echo $post_data; ?></span>
-            <h4><?php echo $post_user_name; ?></h4><br>
+            <h4><a href="home.php?id_profile=<?php echo $post_user_id; ?>"><?php echo $post_user_name; ?></a></h4>
             <hr class="w3-clear">
             <p><?php echo $post_text; ?></p>
               <div class="w3-row-padding" style="margin:0 -16px">

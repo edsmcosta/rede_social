@@ -14,7 +14,7 @@
 
     $id_user = $_SESSION["id_user"];
 
-    if($_POST["edit_user_button"] != NULL){
+    if($_POST != NULL){
         
         include_once "bd_connect.php";
 
@@ -22,23 +22,31 @@
         $new_login = addslashes( $_POST["login"] );
         $new_phone = addslashes( $_POST["telefone"] );
         $new_image = addslashes( $_POST["foto"] );
-
+        $password_change = false;
         if($_POST["password3"] != "" && $_POST["password3"] = $_POST["password2"]){
-            $new_password = addslashes( $_POST["password3"] );
+
+            $new_password = addslashes( md5($_POST["password3"]) );
+            $password_change = true;
+
         }else{
-            $new_password = addslashes( $_POST["password1"] );
+
+            $new_password = addslashes( md5($_POST["password1"]) );
+            
         }
 
         // Valida campos obrigatórios
-        if ($new_name != "" && $new_login != "" && $new_password != "" ) {
+        if ($new_name != "" && $new_login != "" && $new_password != "" && $new_phone != "" ) {
+
+                if($password_change){ $cond1 = ", password = '$new_password'";}else{ $cond1 = "";}
+                if($new_picture != ""){ $cond2 = ", picture = '$new_picture'";}else{ $cond2 = "";}
 
                 $sql = "UPDATE users 
                         SET 
-                              'name' = '$new_name'
-                            , 'login' = '$new_login'
-                            , 'password' = '$new_password'
-                            , 'picture' = '$new_picture'
-                            , 'phone' = '$new_phone'
+                              name = '$new_name'
+                            , login = '$new_login'"
+                            .$cond1
+                            .$cond2
+                            .", phone = '$new_phone'
                         WHERE id_user = $id_user"
                 ;
                 
@@ -47,9 +55,18 @@
             var_dump($retorno_edit);
         
             if ($retorno_edit == true) {
+
+                $_SESSION["user_name"]  = $new_name;
+                $_SESSION["user_picture"] = $new_picture;
+                $_SESSION["user_phone"] = $new_phone;
+                $_SESSION["id_profile"] = $id_user;
+                $_SESSION['profile_name'] = $new_name;
+                $_SESSION['profile_picture'] = $new_picture;
+                $_SESSION['profile_phone'] =  $new_phone;
+
                 echo "<script>
                         alert('Editado com sucesso!!')
-                        location.href = 'cadastro.php'
+                        location.href = 'home.php'
                       </script>";
 
             }else{
@@ -118,7 +135,7 @@
             </div>
 
             <div class="form-group">
-                <label>Senha Antiga</label>
+                <label>Senha Atual</label>
                 <input type="password" value="<?php echo "" ;?>" name="password1" maxlength="50" class="form-control" placeholder="Senha Antiga">
             </div>
 
@@ -141,7 +158,7 @@
                 <input type="text" value="<?php echo $image ;?>" name="foto" class="form-control">
             </div>
 
-            <button type="submit" name="edit_user_button" class="w3-btn w3-blue w3-border w3-border-blue w3-round-xlarge">Cadastrar</button>
+            <button type="submit" name="edit_user_button" class="w3-btn w3-blue w3-border w3-border-blue w3-round-xlarge">Salvar</button>
             <a class ="w3-btn w3-red w3-border w3-border-red w3-round-xlarge" href="home.php">Voltar</a>    
         </form>  
     
