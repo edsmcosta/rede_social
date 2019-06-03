@@ -72,7 +72,7 @@
     
 		if (!$registro[0]) {
 
-			$sql = "INSERT INTO invite (id_sender, id_receiver)
+			$sql = "INSERT INTO invites (id_sender, id_receiver)
           VALUES ('$id_sender', '$id_receiver')";
           
       $retorno_invite = $conexao -> query( $sql );
@@ -107,8 +107,8 @@
     
 		if ($registro[0]) {
 
-			$sql = "INSERT INTO invite (id_sender, id_receiver)
-          VALUES ('$id_s  ender', '$id_receiver')";
+			$sql = "INSERT INTO invites (id_sender, id_receiver)
+          VALUES ('$id_sender', '$id_receiver')";
           
       $retorno_invite = $conexao -> query( $sql );
       
